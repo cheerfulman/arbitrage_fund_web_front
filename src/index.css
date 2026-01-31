@@ -1,0 +1,98 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  font-family: 'IBM Plex Sans', system-ui, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background-color: #f5f5f5;
+}
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+}
+
+/* Ant Design 主题覆盖 */
+.ant-table-thead > tr > th {
+  background-color: #fafafa !important;
+  font-weight: 600;
+}
+
+.ant-table-tbody > tr:hover > td {
+  background-color: #f0f7ff !important;
+}
+
+/* Markdown 样式 */
+.markdown-content {
+  line-height: 1.8;
+}
+
+.markdown-content h1,
+.markdown-content h2,
+.markdown-content h3 {
+  margin-top: 1em;
+  margin-bottom: 0.5em;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.markdown-content h3 {
+  font-size: 1.1rem;
+  color: #374151;
+}
+
+.markdown-content p {
+  margin-bottom: 0.75em;
+  color: #4b5563;
+}
+
+.markdown-content ul,
+.markdown-content ol {
+  padding-left: 1.5em;
+  margin-bottom: 0.75em;
+}
+
+.markdown-content li {
+  margin-bottom: 0.25em;
+}
+
+.markdown-content strong {
+  color: #111827;
+}
+
+/* 溢价率颜色 */
+.premium-positive {
+  color: #cf1322;
+  font-weight: 600;
+}
+
+.premium-negative {
+  color: #3f8600;
+  font-weight: 600;
+}
+
+/* 响应式表格 */
+@media (max-width: 768px) {
+  .ant-table {
+    font-size: 12px;
+  }
+  
+  .ant-table-thead > tr > th,
+  .ant-table-tbody > tr > td {
+    padding: 8px 4px !important;
+  }
+}
