@@ -23,10 +23,15 @@ const Home: React.FC = () => {
 
   const { fetchAnalysis } = useAnalysis();
 
-  // 检查是否为非工作日（周末或节假日）
+  // 检查是否为非工作日（周末或节假日或未来日期）
   const isNonWorkingDay = (current: dayjs.Dayjs): boolean => {
     // 限制不能选择2026-01-28之前的日期
     if (current.isBefore(dayjs('2026-01-28'), 'day')) {
+      return true;
+    }
+    
+    // 限制不能选择大于当前日期的日期
+    if (current.isAfter(dayjs(), 'day')) {
       return true;
     }
     
