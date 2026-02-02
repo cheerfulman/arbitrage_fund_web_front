@@ -60,7 +60,7 @@ const FundTable: React.FC<FundTableProps> = ({ data, loading, onViewAnalysis }) 
       sorter: (a, b) => {
         const rateA = calculatePremiumRate(a.price, a.estimate_value);
         const rateB = calculatePremiumRate(b.price, b.estimate_value);
-        return rateB - rateA;
+        return rateA - rateB;
       },
       defaultSortOrder: 'descend',
       render: (_: unknown, record: FundAnalysis) => {

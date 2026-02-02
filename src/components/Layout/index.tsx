@@ -11,9 +11,20 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   return (
     <AntLayout className="min-h-screen">
       <Header className="bg-white shadow-sm flex items-center justify-center px-4 h-16">
-        <h1 className="text-xl font-semibold text-gray-800 m-0">
-          智套小工具
-        </h1>
+        <div className="flex items-center">
+          <img 
+            src="/favicon.ico" 
+            alt="Logo" 
+            className="w-8 h-8 mr-2" 
+            onError={(e) => {
+              const target = e.target as HTMLImageElement;
+              target.style.display = 'none';
+            }}
+          />
+          <h1 className="text-xl font-semibold text-gray-800 m-0">
+            基金套利AI分析助手
+          </h1>
+        </div>
       </Header>
       
       <Content className="p-4 md:p-6">

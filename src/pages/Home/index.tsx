@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { DatePicker, Button, Empty, Spin } from 'antd';
 import { ReloadOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
+import chineseDays from 'chinese-days';
 import { useAnalysisStore } from '../../store/analysisStore';
 import { useAnalysis } from '../../hooks/useAnalysis';
 import FundTable from '../../components/FundTable';
@@ -22,16 +23,78 @@ const Home: React.FC = () => {
 
   const { fetchAnalysis } = useAnalysis();
 
-  // 初始加载
+  // 检查是否为非工作日（周末或节假日）
+  const isNonWorkingDay = (current: dayjs.Dayjs): boolean => {
+    // 限制不能选择2026-01-28之前的日期
+    if (current.isBefore(dayjs('2026-01-28'), 'day')) {
+      return true;
+    }
+    
+    // 使用 chinese-days 库判断是否为节假日
+    const dateStr = current.format('YYYY-MM-DD');
+    if (chineseDays.isHoliday(dateStr)) {
+      return true;
+    }
+    
+    // 检查是否为周末（周六或周日）
+    const dayOfWeek = current.day(); // 0为周日，1-6为周一到周六
+    if (dayOfWeek === 0 || dayOfWeek === 6) {
+      return true;
+    }
+    
+    return false;
+  };
+
+  // 找到最近的工作日
+  const findLastWorkingDay = (startDate: dayjs.Dayjs): dayjs.Dayjs => {
+    let currentDate = startDate;
+    while (isNonWorkingDay(currentDate)) {
+      currentDate = currentDate.subtract(1, 'day');
+      // 如果回退到2026-01-28之前，则返回2026-01-28（如果它是工作日）
+      if (currentDate.isBefore(dayjs('2026-01-28'), 'day')) {
+        currentDate = dayjs('2026-01-28');
+        // 如果2026-01-28不是工作日，继续向前找
+        while (isNonWorkingDay(currentDate)) {
+          if (currentDate.isSame(dayjs('2026-01-28'), 'day')) {
+            // 如果2026-01-28本身就是非工作日，返回null或处理这种情况
+            // 实际上，2026-01-28是周四，应该是工作日
+            break;
+          }
+          currentDate = currentDate.subtract(1, 'day');
+          if (currentDate.isBefore(dayjs('2026-01-28'), 'day')) {
+            // 如果找不到工作日，返回2026-01-28
+            return dayjs('2026-01-28');
+          }
+        }
+        break;
+      }
+    }
+    return currentDate;
+  };
+
+    // 初始加载
   useEffect(() => {
-    fetchAnalysis();
+    // 如果当前日期是周末或节假日，自动调整到最近的上一个工作日
+    const currentDate = dayjs();
+    if (isNonWorkingDay(currentDate)) {
+      const lastWorkingDay = findLastWorkingDay(currentDate);
+      fetchAnalysis(lastWorkingDay.format('YYYY-MM-DD'));
+    } else {
+      fetchAnalysis();
+    }
   }, []);
 
   // 日期变更
   const handleDateChange = (value: dayjs.Dayjs | null) => {
     if (value) {
-      const newDate = value.format('YYYY-MM-DD');
-      fetchAnalysis(newDate);
+      // 如果选择的日期是非工作日，自动调整到最近的上一个工作日
+      if (isNonWorkingDay(value)) {
+        const lastWorkingDay = findLastWorkingDay(value);
+        fetchAnalysis(lastWorkingDay.format('YYYY-MM-DD'));
+      } else {
+        const newDate = value.format('YYYY-MM-DD');
+        fetchAnalysis(newDate);
+      }
     }
   };
 
@@ -57,6 +120,7 @@ const Home: React.FC = () => {
               onChange={handleDateChange}
               allowClear={false}
               className="w-40"
+              disabledDate={isNonWorkingDay}
             />
           </div>
           
